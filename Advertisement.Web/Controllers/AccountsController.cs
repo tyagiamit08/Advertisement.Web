@@ -91,5 +91,34 @@ namespace Advertisement.Web.Controllers
 
 			return View(model);
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> Login()
+		{
+			var model = new LoginModel();
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Login(LoginModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var result =
+					await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index", "Home");
+				}
+				else
+				{
+					ModelState.AddModelError("LoginError", "Email and Password are not in correct combination.");
+				}
+			}
+
+			return View("Login", model);
+
+		}
 	}
 }
